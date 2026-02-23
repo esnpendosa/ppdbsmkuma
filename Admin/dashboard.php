@@ -6,7 +6,7 @@ if (!isset($_SESSION['admin'])) {
 }
 include '../koneksi.php';
 
-// Ambil total pendaftar - PERBAIKAN: ganti 'pendaftar' dengan 'pendaftaran_siswa'
+// Ambil total pendaftar
 $result = mysqli_query($koneksi, "SELECT COUNT(*) as jumlah FROM pendaftaran_siswa");
 $data = mysqli_fetch_array($result);
 $total = $data['jumlah'];
@@ -135,6 +135,21 @@ $pendaftar_terbaru = mysqli_query($koneksi, "SELECT * FROM pendaftaran_siswa ORD
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       margin-bottom: 20px;
     }
+    .header-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .school-name {
+      font-size: 24px;
+      font-weight: bold;
+      color: #004080;
+    }
+    .admin-info {
+      font-size: 14px;
+      color: #666;
+    }
   </style>
 </head>
 <body>
@@ -149,8 +164,14 @@ $pendaftar_terbaru = mysqli_query($koneksi, "SELECT * FROM pendaftaran_siswa ORD
 
   <div class="content">
     <div class="welcome">
-      <h1>Selamat Datang, <?= $_SESSION['admin']['nama_lengkap'] ?? $_SESSION['admin'] ?>!</h1>
-      <p>Dashboard Sistem PPDB SMK UMAR MAS'UD</p>
+      <div class="header-info">
+        <div class="school-name">SMK UMAR MAS'UD</div>
+        <div class="admin-info">
+          Login sebagai: <strong><?= $_SESSION['admin']['nama_lengkap'] ?? $_SESSION['admin'] ?></strong>
+        </div>
+      </div>
+      <h1>Selamat Datang di Dashboard Admin!</h1>
+      <p>Sistem Penerimaan Peserta Didik Baru</p>
     </div>
 
     <div class="cards">
@@ -174,7 +195,7 @@ $pendaftar_terbaru = mysqli_query($koneksi, "SELECT * FROM pendaftaran_siswa ORD
         <thead>
           <tr>
             <th>Nama Lengkap</th>
-            <th>NIK</th>
+            <th>NIS</th> <!-- DIUBAH: NIK menjadi NIS -->
             <th>Jenis Kelamin</th>
             <th>Tanggal Lahir</th>
             <th>Tanggal Daftar</th>
@@ -184,7 +205,7 @@ $pendaftar_terbaru = mysqli_query($koneksi, "SELECT * FROM pendaftaran_siswa ORD
           <?php while($row = mysqli_fetch_array($pendaftar_terbaru)): ?>
           <tr>
             <td><?= htmlspecialchars($row['nama_lengkap']) ?></td>
-            <td><?= htmlspecialchars($row['nik']) ?></td>
+            <td><?= htmlspecialchars($row['nis']) ?></td> <!-- DIUBAH: nik menjadi nis -->
             <td><?= htmlspecialchars($row['jenis_kelamin']) ?></td>
             <td><?= date('d/m/Y', strtotime($row['tanggal_lahir'])) ?></td>
             <td><?= date('d/m/Y H:i', strtotime($row['waktu_submit'])) ?></td>

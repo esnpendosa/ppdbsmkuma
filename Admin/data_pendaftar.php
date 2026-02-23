@@ -140,12 +140,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'hapus' && isset($_GET['id'])) 
     exit();
 }
 
-// QUERY UNTUK MENGAMBIL DATA PENDAFTAR
+// QUERY UNTUK MENGAMBIL DATA PENDAFTAR - DIPERBAIKI: ganti 'nik' menjadi 'nis'
 $query = "
     SELECT 
         ps.id,
         ps.nama_lengkap,
-        ps.nik,
+        ps.nis, -- DIUBAH: nik menjadi nis
         ps.jenis_kelamin,
         ps.tanggal_lahir,
         ps.email,
@@ -395,6 +395,17 @@ $total = mysqli_num_rows($data);
             animation: spin 2s linear infinite;
             margin-bottom: 15px;
         }
+        .real-time-clock {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #004080;
+            font-family: 'Courier New', monospace;
+        }
+        .clock-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -440,7 +451,12 @@ $total = mysqli_num_rows($data);
             </div>
             <div class="stat-item">
                 <h3>Terakhir Update</h3>
-                <p><?= date('d/m/Y H:i'); ?></p>
+                <div class="real-time-clock" id="realTimeClock">
+                    <!-- Jam akan diisi oleh JavaScript -->
+                </div>
+                <div class="clock-label" id="dateDisplay">
+                    <!-- Tanggal akan diisi oleh JavaScript -->
+                </div>
             </div>
             <div class="stat-item">
                 <h3>Status Sistem</h3>
@@ -455,7 +471,7 @@ $total = mysqli_num_rows($data);
                     <tr>
                         <th>No</th>
                         <th>Nama Lengkap</th>
-                        <th>NIK</th>
+                        <th>NIS</th> <!-- DIUBAH: NIK menjadi NIS -->
                         <th>Jenis Kelamin</th>
                         <th>Asal Sekolah</th>
                         <th>Jurusan</th>
@@ -476,7 +492,7 @@ $total = mysqli_num_rows($data);
                     <tr>
                         <td><?= $no++; ?></td>
                         <td><strong><?= htmlspecialchars($d['nama_lengkap'] ?? 'Tidak ada data'); ?></strong></td>
-                        <td><?= htmlspecialchars($d['nik'] ?? 'Tidak ada data'); ?></td>
+                        <td><?= htmlspecialchars($d['nis'] ?? 'Tidak ada data'); ?></td> <!-- DIUBAH: nik menjadi nis -->
                         <td><?= htmlspecialchars($d['jenis_kelamin'] ?? 'Tidak ada data'); ?></td>
                         <td><?= htmlspecialchars($d['asal_sekolah'] ?? '-'); ?></td>
                         <td>
@@ -540,6 +556,33 @@ $total = mysqli_num_rows($data);
                 window.location.href = 'data_pendaftar.php?action=hapus&id=' + id;
             }
         }
+
+        // Fungsi untuk update jam real-time
+        function updateRealTimeClock() {
+            const now = new Date();
+            
+            // Format waktu: HH:MM:SS (24 jam)
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            
+            // Format tanggal: DD/MM/YYYY
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const dateString = `${day}/${month}/${year}`;
+            
+            // Update elemen HTML
+            document.getElementById('realTimeClock').textContent = timeString;
+            document.getElementById('dateDisplay').textContent = dateString;
+        }
+
+        // Update jam setiap detik
+        setInterval(updateRealTimeClock, 1000);
+
+        // Jalankan sekali saat halaman dimuat
+        updateRealTimeClock();
 
         // Sembunyikan loading setelah halaman dimuat
         window.addEventListener('load', function() {

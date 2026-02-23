@@ -161,6 +161,30 @@ while($r = mysqli_fetch_assoc($q_harian)){
       font-weight: bold;
       color: #333;
     }
+    .real-time-clock {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #004080;
+      font-family: 'Courier New', monospace;
+    }
+    .clock-label {
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 5px;
+    }
+    .refresh-info {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+    .auto-refresh {
+      background: #e7f3ff;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 12px;
+      border-left: 4px solid #004080;
+    }
   </style>
 </head>
 <body>
@@ -179,6 +203,11 @@ while($r = mysqli_fetch_assoc($q_harian)){
       <p>Visualisasi data pendaftaran PPDB SMK UMAR MAS'UD</p>
     </div>
 
+    <!-- Auto Refresh Info -->
+    <div class="auto-refresh">
+      <strong>🔄 Auto Refresh:</strong> Grafik akan diperbarui otomatis setiap 30 detik
+    </div>
+
     <?php
     // Hitung total data
     $total_pendaftar = mysqli_fetch_array(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM pendaftaran_siswa"))['total'];
@@ -189,19 +218,27 @@ while($r = mysqli_fetch_assoc($q_harian)){
     <div class="stats-cards">
       <div class="stat-card">
         <h3>Total Pendaftar</h3>
-        <div class="number"><?= $total_pendaftar; ?></div>
+        <div class="number" id="totalPendaftar"><?= $total_pendaftar; ?></div>
       </div>
       <div class="stat-card">
         <h3>Jurusan Tersedia</h3>
-        <div class="number"><?= $total_jurusan; ?></div>
+        <div class="number" id="totalJurusan"><?= $total_jurusan; ?></div>
       </div>
       <div class="stat-card">
         <h3>Pemohon Beasiswa</h3>
-        <div class="number"><?= $total_beasiswa; ?></div>
+        <div class="number" id="totalBeasiswa"><?= $total_beasiswa; ?></div>
       </div>
       <div class="stat-card">
         <h3>Update Terakhir</h3>
-        <div class="number"><?= date('H:i'); ?></div>
+        <div class="real-time-clock" id="realTimeClock">
+          <!-- Jam akan diisi oleh JavaScript -->
+        </div>
+        <div class="clock-label" id="dateDisplay">
+          <!-- Tanggal akan diisi oleh JavaScript -->
+        </div>
+        <div class="refresh-info" id="lastRefresh">
+          🔄 Auto refresh: <span id="countdown">30</span>s
+        </div>
       </div>
     </div>
 
@@ -237,108 +274,205 @@ while($r = mysqli_fetch_assoc($q_harian)){
   </div>
 
   <script>
-    // Chart Jurusan
-    const ctxJurusan = document.getElementById('chartJurusan').getContext('2d');
-    new Chart(ctxJurusan, {
-      type: 'bar',
-      data: {
-        labels: <?= json_encode($jurusan); ?>,
-        datasets: [{
-          label: 'Jumlah Pendaftar',
-          data: <?= json_encode($jumlah_jurusan); ?>,
-          backgroundColor: [
-            '#004080', '#007bff', '#17a2b8', '#28a745', '#ffc107', '#dc3545'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 1
+    // Variabel global untuk menyimpan instance chart
+    let charts = {
+      jurusan: null,
+      gender: null,
+      beasiswa: null,
+      harian: null
+    };
+
+    // Fungsi untuk update jam real-time
+    function updateRealTimeClock() {
+      const now = new Date();
+      
+      // Format waktu: HH:MM:SS (24 jam)
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const timeString = `${hours}:${minutes}:${seconds}`;
+      
+      // Format tanggal: DD/MM/YYYY
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      const dateString = `${day}/${month}/${year}`;
+      
+      // Update elemen HTML
+      document.getElementById('realTimeClock').textContent = timeString;
+      document.getElementById('dateDisplay').textContent = dateString;
+    }
+
+    // Fungsi untuk countdown auto refresh
+    let countdown = 30;
+    function updateCountdown() {
+      countdown--;
+      document.getElementById('countdown').textContent = countdown;
+      
+      if (countdown <= 0) {
+        countdown = 30;
+        refreshData();
+      }
+    }
+
+    // Fungsi untuk refresh data
+    function refreshData() {
+      console.log('🔄 Refreshing data...');
+      
+      // Update countdown
+      document.getElementById('countdown').textContent = '0';
+      
+      // Show loading state
+      document.querySelectorAll('.number').forEach(el => {
+        el.innerHTML = '<span style="color: #999">Loading...</span>';
+      });
+      
+      // Refresh page after a short delay to show loading state
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+
+    // Inisialisasi chart
+    function initializeCharts() {
+      // Chart Jurusan
+      const ctxJurusan = document.getElementById('chartJurusan').getContext('2d');
+      charts.jurusan = new Chart(ctxJurusan, {
+        type: 'bar',
+        data: {
+          labels: <?= json_encode($jurusan); ?>,
+          datasets: [{
+            label: 'Jumlah Pendaftar',
+            data: <?= json_encode($jumlah_jurusan); ?>,
+            backgroundColor: [
+              '#004080', '#007bff', '#17a2b8', '#28a745', '#ffc107', '#dc3545'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
             }
           }
         }
-      }
-    });
+      });
 
-    // Chart Jenis Kelamin
-    const ctxGender = document.getElementById('chartGender').getContext('2d');
-    new Chart(ctxGender, {
-      type: 'pie',
-      data: {
-        labels: <?= json_encode($gender); ?>,
-        datasets: [{
-          data: <?= json_encode($jumlah_gender); ?>,
-          backgroundColor: ['#004080', '#e83e8c'],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom'
-          }
-        }
-      }
-    });
-
-    // Chart Beasiswa
-    const ctxBeasiswa = document.getElementById('chartBeasiswa').getContext('2d');
-    new Chart(ctxBeasiswa, {
-      type: 'doughnut',
-      data: {
-        labels: <?= json_encode($beasiswa); ?>,
-        datasets: [{
-          data: <?= json_encode($jumlah_beasiswa); ?>,
-          backgroundColor: ['#28a745', '#17a2b8', '#ffc107'],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom'
-          }
-        }
-      }
-    });
-
-    // Chart Harian
-    const ctxHarian = document.getElementById('chartHarian').getContext('2d');
-    new Chart(ctxHarian, {
-      type: 'line',
-      data: {
-        labels: <?= json_encode($tanggal); ?>,
-        datasets: [{
-          label: 'Pendaftar per Hari',
-          data: <?= json_encode($jumlah_harian); ?>,
-          backgroundColor: 'rgba(0, 64, 128, 0.1)',
-          borderColor: '#004080',
-          borderWidth: 2,
-          tension: 0.4,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 1
+      // Chart Jenis Kelamin
+      const ctxGender = document.getElementById('chartGender').getContext('2d');
+      charts.gender = new Chart(ctxGender, {
+        type: 'pie',
+        data: {
+          labels: <?= json_encode($gender); ?>,
+          datasets: [{
+            data: <?= json_encode($jumlah_gender); ?>,
+            backgroundColor: ['#004080', '#e83e8c'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
             }
           }
         }
+      });
+
+      // Chart Beasiswa
+      const ctxBeasiswa = document.getElementById('chartBeasiswa').getContext('2d');
+      charts.beasiswa = new Chart(ctxBeasiswa, {
+        type: 'doughnut',
+        data: {
+          labels: <?= json_encode($beasiswa); ?>,
+          datasets: [{
+            data: <?= json_encode($jumlah_beasiswa); ?>,
+            backgroundColor: ['#28a745', '#17a2b8', '#ffc107'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+
+      // Chart Harian
+      const ctxHarian = document.getElementById('chartHarian').getContext('2d');
+      charts.harian = new Chart(ctxHarian, {
+        type: 'line',
+        data: {
+          labels: <?= json_encode($tanggal); ?>,
+          datasets: [{
+            label: 'Pendaftar per Hari',
+            data: <?= json_encode($jumlah_harian); ?>,
+            backgroundColor: 'rgba(0, 64, 128, 0.1)',
+            borderColor: '#004080',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Event listener untuk manual refresh
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'r' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        refreshData();
+      }
+    });
+
+    // Jalankan saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+      // Inisialisasi chart
+      initializeCharts();
+      
+      // Update jam real-time
+      updateRealTimeClock();
+      setInterval(updateRealTimeClock, 1000);
+      
+      // Start countdown
+      setInterval(updateCountdown, 1000);
+      
+      // Auto refresh setiap 30 detik
+      setInterval(refreshData, 30000);
+      
+      // Info keyboard shortcut
+      console.log('💡 Tips: Tekan Ctrl+R untuk refresh manual');
+    });
+
+    // Handle page visibility change (tab aktif/non-aktif)
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        // Tab menjadi aktif, refresh data
+        refreshData();
       }
     });
   </script>

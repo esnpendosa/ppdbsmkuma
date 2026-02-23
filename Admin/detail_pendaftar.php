@@ -45,7 +45,7 @@ if (!is_numeric($id) || $id <= 0) {
     die("ID tidak valid!");
 }
 
-// QUERY UNTUK MENGAMBIL DATA LENGKAP PENDAFTAR
+// QUERY UNTUK MENGAMBIL DATA LENGKAP PENDAFTAR - DIPERBAIKI: ganti 'nik' menjadi 'nis'
 $query = "
     SELECT 
         ps.*,
@@ -582,8 +582,8 @@ function getUploadsFileList() {
                     <span><?= getData($data, 'nama_lengkap') ?></span>
                 </div>
                 <div class="info-item">
-                    <label>NIK</label>
-                    <span><?= getData($data, 'nik') ?></span>
+                    <label>NIS</label> <!-- DIUBAH: NIK menjadi NIS -->
+                    <span><?= getData($data, 'nis') ?></span> <!-- DIUBAH: nik menjadi nis -->
                 </div>
                 <div class="info-item">
                     <label>Jenis Kelamin</label>

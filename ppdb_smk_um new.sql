@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Waktu pembuatan: 25 Nov 2025 pada 00.40
--- Versi server: 8.0.30
--- Versi PHP: 8.2.29
+-- Host: 127.0.0.1
+-- Generation Time: Nov 27, 2025 at 05:12 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,46 +18,46 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Basis data: `ppdb_smk_um`
+-- Database: `ppdb_smk_um`
 --
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `admin`
+-- Table structure for table `admin`
 --
 
 CREATE TABLE `admin` (
-  `id` int NOT NULL,
-  `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama_lengkap` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `nama_lengkap` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `admin`
+-- Dumping data for table `admin`
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`, `nama_lengkap`, `created_at`) VALUES
-(1, 'admin', '$2y$12$yLJHLyrNOnv2ylubGny7X.9YkXvHLpxYbg5/0ZpIvr4L49TPLHCYa', 'Administrator PPDB', '2025-11-24 11:58:12');
+(1, 'admin', '$2y$10$4iPisoAjaHceSMaHUTzO5OlQnclUzqOZb5fe1mMCFXf1DTGD6xc9e', 'Administrator PPDB', '2025-11-24 11:58:12');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `akademik`
+-- Table structure for table `akademik`
 --
 
 CREATE TABLE `akademik` (
-  `id` int NOT NULL,
-  `siswa_id` int NOT NULL,
-  `asal_sekolah` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
-  `tahun_lulus` year NOT NULL,
+  `id` int(11) NOT NULL,
+  `siswa_id` int(11) NOT NULL,
+  `asal_sekolah` varchar(150) NOT NULL,
+  `tahun_lulus` year(4) NOT NULL,
   `rata_rata_raport` decimal(4,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `akademik`
+-- Dumping data for table `akademik`
 --
 
 INSERT INTO `akademik` (`id`, `siswa_id`, `asal_sekolah`, `tahun_lulus`, `rata_rata_raport`) VALUES
@@ -66,25 +66,26 @@ INSERT INTO `akademik` (`id`, `siswa_id`, `asal_sekolah`, `tahun_lulus`, `rata_r
 (3, 5, 'SMPN 1 SANGKAPURA', '0000', 0.00),
 (11, 16, 'giyhjb', '2001', 90.00),
 (12, 17, 'umg', '2020', 3.80),
-(13, 18, 'umg', '2023', 3.80);
+(13, 18, 'umg', '2023', 3.80),
+(14, 19, 'smk', '2021', 90.00);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `alamat_siswa`
+-- Table structure for table `alamat_siswa`
 --
 
 CREATE TABLE `alamat_siswa` (
-  `id` int NOT NULL,
-  `siswa_id` int NOT NULL,
-  `provinsi` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `kota` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `kecamatan` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `alamat_lengkap` text COLLATE utf8mb4_general_ci NOT NULL
+  `id` int(11) NOT NULL,
+  `siswa_id` int(11) NOT NULL,
+  `provinsi` varchar(100) NOT NULL,
+  `kota` varchar(100) NOT NULL,
+  `kecamatan` varchar(100) NOT NULL,
+  `alamat_lengkap` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `alamat_siswa`
+-- Dumping data for table `alamat_siswa`
 --
 
 INSERT INTO `alamat_siswa` (`id`, `siswa_id`, `provinsi`, `kota`, `kecamatan`, `alamat_lengkap`) VALUES
@@ -93,27 +94,28 @@ INSERT INTO `alamat_siswa` (`id`, `siswa_id`, `provinsi`, `kota`, `kecamatan`, `
 (3, 5, 'ty', 'ty', 'qer', 'jhjgfd'),
 (11, 16, 'yu', 'sth', 'dgfh', 'fj'),
 (12, 17, 'East Java', 'GRESIK', 'Bungah', 'Jl. Panglima sudirman sungonlegowo bungah gresik'),
-(13, 18, 'Jawa Timur', 'Kabupaten Gresik', 'Bungah', 'Jl. H. Agus Salim');
+(13, 18, 'Jawa Timur', 'Kabupaten Gresik', 'Bungah', 'Jl. H. Agus Salim'),
+(14, 19, 'jatim', 'gresik', 'bungah', 'sungonlegowo');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `dokumen`
+-- Table structure for table `dokumen`
 --
 
 CREATE TABLE `dokumen` (
-  `id` int NOT NULL,
-  `siswa_id` int NOT NULL,
-  `sk_lulus` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `kk` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `akta_lahir` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `pas_foto` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `ktp_ortu_wali` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `sertifikat_prestasi` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `siswa_id` int(11) NOT NULL,
+  `sk_lulus` varchar(255) NOT NULL,
+  `kk` varchar(255) NOT NULL,
+  `akta_lahir` varchar(255) NOT NULL,
+  `pas_foto` varchar(255) NOT NULL,
+  `ktp_ortu_wali` varchar(255) NOT NULL,
+  `sertifikat_prestasi` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `dokumen`
+-- Dumping data for table `dokumen`
 --
 
 INSERT INTO `dokumen` (`id`, `siswa_id`, `sk_lulus`, `kk`, `akta_lahir`, `pas_foto`, `ktp_ortu_wali`, `sertifikat_prestasi`) VALUES
@@ -128,23 +130,25 @@ INSERT INTO `dokumen` (`id`, `siswa_id`, `sk_lulus`, `kk`, `akta_lahir`, `pas_fo
 (16, 18, 'uploads/1764030794_6924f94a58365.png', 'uploads/1764030794_6924f94a5861f.jpg', 'uploads/1764030794_6924f94a58882.docx', 'uploads/1764030794_6924f94a58b6e.jpg', 'uploads/1764030794_6924f94a58e0d.jpg', ''),
 (17, 18, 'uploads/1764030913_6924f9c1694be.png', 'uploads/1764030913_6924f9c1698a3.jpg', 'uploads/1764030913_6924f9c169ca0.docx', 'uploads/1764030913_6924f9c16a062.jpg', 'uploads/1764030913_6924f9c16a3ed.jpg', ''),
 (18, 18, 'uploads/1764030923_6924f9cbda9ce.png', 'uploads/1764030923_6924f9cbdad9b.jpg', 'uploads/1764030923_6924f9cbdb0ee.docx', 'uploads/1764030923_6924f9cbdb456.jpg', 'uploads/1764030923_6924f9cbdbb4b.jpg', ''),
-(19, 18, 'uploads/1764030979_6924fa03581c1.png', 'uploads/1764030979_6924fa03584f9.jpg', 'uploads/1764030979_6924fa0358ae7.docx', 'uploads/1764030979_6924fa03591c3.jpg', 'uploads/1764030979_6924fa03595ae.jpg', '');
+(19, 18, 'uploads/1764030979_6924fa03581c1.png', 'uploads/1764030979_6924fa03584f9.jpg', 'uploads/1764030979_6924fa0358ae7.docx', 'uploads/1764030979_6924fa03591c3.jpg', 'uploads/1764030979_6924fa03595ae.jpg', ''),
+(20, 19, 'uploads/1764258835_69287413272fb.docx', 'uploads/1764258835_69287413277cf.docx', 'uploads/1764258835_6928741327d8c.pdf', 'uploads/1764258835_6928741328c35.png', 'uploads/1764258835_6928741328f6d.docx', ''),
+(21, 19, 'uploads/1764258889_69287449bce47.docx', 'uploads/1764258889_69287449bd6f2.docx', 'uploads/1764258889_69287449bdb13.pdf', 'uploads/1764258889_69287449bde16.png', 'uploads/1764258889_69287449be2c5.docx', '');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `jurusan_beasiswa`
+-- Table structure for table `jurusan_beasiswa`
 --
 
 CREATE TABLE `jurusan_beasiswa` (
-  `id` int NOT NULL,
-  `siswa_id` int NOT NULL,
-  `pilihan_jurusan` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `pilihan_beasiswa` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `siswa_id` int(11) NOT NULL,
+  `pilihan_jurusan` varchar(100) NOT NULL,
+  `pilihan_beasiswa` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `jurusan_beasiswa`
+-- Dumping data for table `jurusan_beasiswa`
 --
 
 INSERT INTO `jurusan_beasiswa` (`id`, `siswa_id`, `pilihan_jurusan`, `pilihan_beasiswa`) VALUES
@@ -153,30 +157,31 @@ INSERT INTO `jurusan_beasiswa` (`id`, `siswa_id`, `pilihan_jurusan`, `pilihan_be
 (3, 5, 'Teknik Komputer dan Jaringan', 'Siswa Berprestasi'),
 (11, 16, 'Multimedia', 'Siswa Yatim dan Piatu'),
 (12, 17, 'Teknik Komputer dan Jaringan', 'Siswa Berprestasi'),
-(13, 18, 'Teknik Komputer dan Jaringan', '');
+(13, 18, 'Teknik Komputer dan Jaringan', ''),
+(14, 19, 'Rekayasa Perangkat Lunak', 'Siswa Berprestasi');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `orangtua_wali`
+-- Table structure for table `orangtua_wali`
 --
 
 CREATE TABLE `orangtua_wali` (
-  `id` int NOT NULL,
-  `siswa_id` int NOT NULL,
-  `nama_ayah` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `pekerjaan_ayah` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `nohp_ayah` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama_ibu` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `pekerjaan_ibu` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `nohp_ibu` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama_wali` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `pekerjaan_wali` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nohp_wali` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `siswa_id` int(11) NOT NULL,
+  `nama_ayah` varchar(100) NOT NULL,
+  `pekerjaan_ayah` varchar(100) NOT NULL,
+  `nohp_ayah` varchar(20) NOT NULL,
+  `nama_ibu` varchar(100) NOT NULL,
+  `pekerjaan_ibu` varchar(100) NOT NULL,
+  `nohp_ibu` varchar(20) NOT NULL,
+  `nama_wali` varchar(100) DEFAULT NULL,
+  `pekerjaan_wali` varchar(100) DEFAULT NULL,
+  `nohp_wali` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `orangtua_wali`
+-- Dumping data for table `orangtua_wali`
 --
 
 INSERT INTO `orangtua_wali` (`id`, `siswa_id`, `nama_ayah`, `pekerjaan_ayah`, `nohp_ayah`, `nama_ibu`, `pekerjaan_ibu`, `nohp_ibu`, `nama_wali`, `pekerjaan_wali`, `nohp_wali`) VALUES
@@ -185,167 +190,169 @@ INSERT INTO `orangtua_wali` (`id`, `siswa_id`, `nama_ayah`, `pekerjaan_ayah`, `n
 (3, 5, 'Bahtiar Efendi', 'Wiraswasta', '081312108177', 'Rohani', 'Wiraswasta', '081312108177', 'sh', NULL, 'h'),
 (11, 16, 'yfjh', 'fjhv', 'fjhv', 'ifhv', 'ugkjb', 'fhkv', '', NULL, ''),
 (12, 17, 'Ayah', 'p', 'p', 'Ibu', 'p', 'p', '', NULL, ''),
-(13, 18, 'Ayah', 'p', 'p', 'p', 'p', 'p', '', NULL, '');
+(13, 18, 'Ayah', 'p', 'p', 'p', 'p', 'p', '', NULL, ''),
+(14, 19, 'sumarji', '-', '-', 'fusha', '-', '-', '', NULL, '');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `pendaftaran_siswa`
+-- Table structure for table `pendaftaran_siswa`
 --
 
 CREATE TABLE `pendaftaran_siswa` (
-  `id` int NOT NULL,
-  `nama_lengkap` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `nik` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `jenis_kelamin` enum('Laki-laki','Perempuan') COLLATE utf8mb4_general_ci NOT NULL,
-  `agama` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `nama_lengkap` varchar(100) NOT NULL,
+  `nis` varchar(20) NOT NULL,
+  `jenis_kelamin` enum('Laki-laki','Perempuan') NOT NULL,
+  `agama` varchar(50) NOT NULL,
   `tanggal_lahir` date NOT NULL,
-  `no_hp` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `waktu_submit` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `no_hp` varchar(20) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `waktu_submit` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `pendaftaran_siswa`
+-- Dumping data for table `pendaftaran_siswa`
 --
 
-INSERT INTO `pendaftaran_siswa` (`id`, `nama_lengkap`, `nik`, `jenis_kelamin`, `agama`, `tanggal_lahir`, `no_hp`, `email`, `waktu_submit`) VALUES
+INSERT INTO `pendaftaran_siswa` (`id`, `nama_lengkap`, `nis`, `jenis_kelamin`, `agama`, `tanggal_lahir`, `no_hp`, `email`, `waktu_submit`) VALUES
 (1, 'erna', '234933483478734', 'Laki-laki', 'Islam', '2025-09-22', '803989389489893', 'erna@gmail.com', '2025-09-22 12:55:52'),
 (3, 'erna', '139982398819', 'Laki-laki', 'islam', '2025-09-22', '93483498948934923438', 'erna@gmail.com', '2025-09-22 14:30:10'),
 (4, 'dv', '456789', 'Perempuan', 'vhbsn', '2025-09-22', '3456789', 'devivhbn@gmail.com', '2025-09-22 14:58:14'),
 (5, 'sxdfg', 'we', 'Laki-laki', 'Islam', '2025-09-24', '456', 'kantin123@gmail.com', '2025-09-24 03:03:36'),
 (16, 'Muhammad As&#039;ad Muhibbin Akbar', '7687687986788587', 'Laki-laki', 'i', '2001-12-12', '08798', 'aadstar72@gmail.com', '2025-11-24 22:46:39'),
 (17, 'MUHAMMAD AS&#039;AD MUHIBBIN AKBAR', '3524270103890001', 'Laki-laki', 'Islam', '2000-12-12', '081335795674', 'aadscreet@gmail.com', '2025-11-24 23:59:25'),
-(18, 'MUHAMMAD AS&#039;AD MUHIBBIN AKBAR', '3524270103890009', 'Laki-laki', 'Islam', '2203-12-12', '085730302827', 'aadscreet@gmail.com', '2025-11-25 00:31:43');
+(18, 'MUHAMMAD AS&#039;AD MUHIBBIN AKBAR', '3524270103890009', 'Laki-laki', 'Islam', '2203-12-12', '085730302827', 'aadscreet@gmail.com', '2025-11-25 00:31:43'),
+(19, 'Muhammad', '220602077', 'Laki-laki', 'islam', '2003-12-12', '081217623624', 'aadscreet@gmail.com', '2025-11-27 15:51:10');
 
 --
--- Indeks untuk tabel yang dibuang
+-- Indexes for dumped tables
 --
 
 --
--- Indeks untuk tabel `admin`
+-- Indexes for table `admin`
 --
 ALTER TABLE `admin`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- Indeks untuk tabel `akademik`
+-- Indexes for table `akademik`
 --
 ALTER TABLE `akademik`
   ADD PRIMARY KEY (`id`),
   ADD KEY `siswa_id` (`siswa_id`);
 
 --
--- Indeks untuk tabel `alamat_siswa`
+-- Indexes for table `alamat_siswa`
 --
 ALTER TABLE `alamat_siswa`
   ADD PRIMARY KEY (`id`),
   ADD KEY `siswa_id` (`siswa_id`);
 
 --
--- Indeks untuk tabel `dokumen`
+-- Indexes for table `dokumen`
 --
 ALTER TABLE `dokumen`
   ADD PRIMARY KEY (`id`),
   ADD KEY `siswa_id` (`siswa_id`);
 
 --
--- Indeks untuk tabel `jurusan_beasiswa`
+-- Indexes for table `jurusan_beasiswa`
 --
 ALTER TABLE `jurusan_beasiswa`
   ADD PRIMARY KEY (`id`),
   ADD KEY `siswa_id` (`siswa_id`);
 
 --
--- Indeks untuk tabel `orangtua_wali`
+-- Indexes for table `orangtua_wali`
 --
 ALTER TABLE `orangtua_wali`
   ADD PRIMARY KEY (`id`),
   ADD KEY `siswa_id` (`siswa_id`);
 
 --
--- Indeks untuk tabel `pendaftaran_siswa`
+-- Indexes for table `pendaftaran_siswa`
 --
 ALTER TABLE `pendaftaran_siswa`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `admin`
+-- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT untuk tabel `akademik`
+-- AUTO_INCREMENT for table `akademik`
 --
 ALTER TABLE `akademik`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT untuk tabel `alamat_siswa`
+-- AUTO_INCREMENT for table `alamat_siswa`
 --
 ALTER TABLE `alamat_siswa`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT untuk tabel `dokumen`
+-- AUTO_INCREMENT for table `dokumen`
 --
 ALTER TABLE `dokumen`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
--- AUTO_INCREMENT untuk tabel `jurusan_beasiswa`
+-- AUTO_INCREMENT for table `jurusan_beasiswa`
 --
 ALTER TABLE `jurusan_beasiswa`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT untuk tabel `orangtua_wali`
+-- AUTO_INCREMENT for table `orangtua_wali`
 --
 ALTER TABLE `orangtua_wali`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT untuk tabel `pendaftaran_siswa`
+-- AUTO_INCREMENT for table `pendaftaran_siswa`
 --
 ALTER TABLE `pendaftaran_siswa`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Constraints for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `akademik`
+-- Constraints for table `akademik`
 --
 ALTER TABLE `akademik`
   ADD CONSTRAINT `akademik_ibfk_1` FOREIGN KEY (`siswa_id`) REFERENCES `pendaftaran_siswa` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `alamat_siswa`
+-- Constraints for table `alamat_siswa`
 --
 ALTER TABLE `alamat_siswa`
   ADD CONSTRAINT `alamat_siswa_ibfk_1` FOREIGN KEY (`siswa_id`) REFERENCES `pendaftaran_siswa` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `dokumen`
+-- Constraints for table `dokumen`
 --
 ALTER TABLE `dokumen`
   ADD CONSTRAINT `dokumen_ibfk_1` FOREIGN KEY (`siswa_id`) REFERENCES `pendaftaran_siswa` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `jurusan_beasiswa`
+-- Constraints for table `jurusan_beasiswa`
 --
 ALTER TABLE `jurusan_beasiswa`
   ADD CONSTRAINT `jurusan_beasiswa_ibfk_1` FOREIGN KEY (`siswa_id`) REFERENCES `pendaftaran_siswa` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `orangtua_wali`
+-- Constraints for table `orangtua_wali`
 --
 ALTER TABLE `orangtua_wali`
   ADD CONSTRAINT `orangtua_wali_ibfk_1` FOREIGN KEY (`siswa_id`) REFERENCES `pendaftaran_siswa` (`id`) ON DELETE CASCADE;

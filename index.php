@@ -279,7 +279,7 @@ section {
       <h2>Elevate Your Future — Mari Bergabung di SMK Umar Mas'ud</h2>
       <p>Bangun kariermu di dunia teknologi, mulai dari sini. Satu klik untuk masa depan tanpa batas.</p>
       <div class="cta">
-<a class="btn-primary" href="Form/ppdb.php"
+<a class="btn-primary" href="Form/ppdb.php?reset=1"
      style="padding:12px 24px; background:#004080; color:#fff; border-radius:8px; text-decoration:none; font-weight:600; box-shadow:0 4px 8px rgba(0,0,0,0.15);">
     Daftar Sekarang
   </a>
@@ -476,10 +476,11 @@ section {
   </div>
 
 <div style="text-align:center; margin-top:32px;">
-  <a class="btn-primary" href="Form/ppdb.php"
-     style="padding:12px 24px; background:#004080; color:#fff; border-radius:8px; text-decoration:none; font-weight:600; box-shadow:0 4px 8px rgba(0,0,0,0.15);">
+  <!-- Ganti semua link pendaftaran dengan: -->
+<a class="btn-primary" href="Form/ppdb.php?reset=1"
+   style="padding:12px 24px; background:#004080; color:#fff; border-radius:8px; text-decoration:none; font-weight:600; box-shadow:0 4px 8px rgba(0,0,0,0.15);">
     Daftar Sekarang
-  </a>
+</a>
 </div>
 </section>
 

@@ -67,16 +67,16 @@ function prosesFormSiswa() {
     global $koneksi;
     
     $nama_lengkap = sanitize($_POST['nama_lengkap']);
-    $nik = sanitize($_POST['nik']);
+    $nis = sanitize($_POST['nis']); // DIUBAH: nik menjadi nis
     $jenis_kelamin = sanitize($_POST['jenis_kelamin']);
     $agama = sanitize($_POST['agama']);
     $tanggal_lahir = sanitize($_POST['tanggal_lahir']);
     $no_hp = sanitize($_POST['no_hp']);
     $email = sanitize($_POST['email']);
 
-    // Validasi NIK (16 digit)
-    if (strlen($nik) != 16 || !is_numeric($nik)) {
-        set_message('error', 'NIK harus 16 digit angka');
+    // Validasi NIS (minimal 5 digit) - DIUBAH: Validasi NIS
+    if (strlen($nis) < 5 || !is_numeric($nis)) {
+        set_message('error', 'NIS harus minimal 5 digit angka');
         return;
     }
 
@@ -86,16 +86,16 @@ function prosesFormSiswa() {
         return;
     }
 
-    // Cek duplikasi NIK
-    $check_query = "SELECT id FROM pendaftaran_siswa WHERE nik = '$nik'";
+    // Cek duplikasi NIS - DIUBAH: Cek NIS bukan NIK
+    $check_query = "SELECT id FROM pendaftaran_siswa WHERE nis = '$nis'";
     $check_result = mysqli_query($koneksi, $check_query);
     if (mysqli_num_rows($check_result) > 0) {
-        set_message('error', 'NIK sudah terdaftar');
+        set_message('error', 'NIS sudah terdaftar');
         return;
     }
 
-    $query = "INSERT INTO pendaftaran_siswa (nama_lengkap, nik, jenis_kelamin, agama, tanggal_lahir, no_hp, email) 
-              VALUES ('$nama_lengkap', '$nik', '$jenis_kelamin', '$agama', '$tanggal_lahir', '$no_hp', '$email')";
+    $query = "INSERT INTO pendaftaran_siswa (nama_lengkap, nis, jenis_kelamin, agama, tanggal_lahir, no_hp, email) 
+              VALUES ('$nama_lengkap', '$nis', '$jenis_kelamin', '$agama', '$tanggal_lahir', '$no_hp', '$email')";
     
     if (mysqli_query($koneksi, $query)) {
         $_SESSION['siswa_id'] = mysqli_insert_id($koneksi);
@@ -318,7 +318,7 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f5f5; /* DIUBAH: Background abu muda */
             min-height: 100vh;
             padding: 20px;
         }
@@ -327,18 +327,25 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
             margin: 0 auto;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             overflow: hidden;
+            position: relative;
         }
         .header {
             background: #004080;
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
         }
         .header h1 {
             margin-bottom: 10px;
             font-size: 2em;
+        }
+        .header-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
         }
         .progress-bar {
             display: flex;
@@ -428,6 +435,7 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
             border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.3s ease;
+            background: #fff;
         }
         input:focus, select:focus, textarea:focus {
             outline: none;
@@ -472,6 +480,13 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
         .btn-success:hover {
             background: #218838;
         }
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        .btn-info:hover {
+            background: #138496;
+        }
         .success-page {
             text-align: center;
             padding: 50px 30px;
@@ -486,7 +501,6 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
             color: #666;
             margin-top: 5px;
         }
-        /* Tambahan untuk form yang tersembunyi */
         .form-section:not(.form-active) {
             display: none !important;
         }
@@ -494,6 +508,11 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
 </head>
 <body>
     <div class="container">
+        <!-- TOMBOL KEMBALI KE BERANDA -->
+        <div class="header-buttons">
+            <a href="../index.php" class="btn btn-info">← Beranda</a>
+        </div>
+
         <div class="header">
             <h1>PPDB SMK UMAR MAS'UD</h1>
             <p>Form Pendaftaran Peserta Didik Baru</p>
@@ -532,7 +551,6 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
 
             <?php if (isset($_SESSION['pendaftaran_selesai'])): ?>
                 <!-- HALAMAN SUKSES -->
-                               <!-- HALAMAN SUKSES -->
                 <div class="success-page">
                     <div class="success-icon">✅</div>
                     <h2 style="color: #28a745; margin-bottom: 20px;">Pendaftaran Berhasil!</h2>
@@ -541,7 +559,7 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
                         Silakan tunggu informasi lebih lanjut melalui email atau WhatsApp.
                     </p>
                     <div class="btn-group" style="justify-content: center;">
-                        <a href="/ppdbsmkum/index.php" class="btn btn-primary">Kembali ke Beranda</a>
+                        <a href="../index.php" class="btn btn-primary">Kembali ke Beranda</a>
                         <a href="cetak_bukti.php?id=<?= $_SESSION['siswa_id'] ?>" class="btn btn-success" target="_blank">Cetak Bukti</a>
                     </div>
                 </div>
@@ -563,10 +581,12 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
                                    value="<?= $_POST['nama_lengkap'] ?? '' ?>">
                         </div>
 
+                        <!-- DIUBAH: NIK menjadi NIS -->
                         <div class="form-group">
-                            <label for="nik">NIK (16 digit) *</label>
-                            <input type="text" id="nik" name="nik" required maxlength="16"
-                                   value="<?= $_POST['nik'] ?? '' ?>" pattern="[0-9]{16}">
+                            <label for="nis">NIS (Nomor Induk Siswa) *</label>
+                            <input type="text" id="nis" name="nis" required minlength="5"
+                                   value="<?= $_POST['nis'] ?? '' ?>" pattern="[0-9]+" title="NIS harus berupa angka">
+                            <div class="file-info">Minimal 5 digit angka</div>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -859,20 +879,20 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
     </div>
 
     <script>
-        // Validasi form client-side
+        // Validasi form client-side - DIUBAH: Validasi NIS
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('ppdbForm');
             
             if (form) {
                 form.addEventListener('submit', function(e) {
-                    // Validasi NIK untuk step siswa
-                    const nikInput = document.getElementById('nik');
-                    if (nikInput) {
-                        const nik = nikInput.value;
-                        if (nik.length !== 16 || !/^\d+$/.test(nik)) {
+                    // Validasi NIS untuk step siswa - DIUBAH: Validasi NIS
+                    const nisInput = document.getElementById('nis');
+                    if (nisInput) {
+                        const nis = nisInput.value;
+                        if (nis.length < 5 || !/^\d+$/.test(nis)) {
                             e.preventDefault();
-                            alert('NIK harus 16 digit angka');
-                            nikInput.focus();
+                            alert('NIS harus minimal 5 digit angka');
+                            nisInput.focus();
                             return;
                         }
                     }
@@ -882,7 +902,7 @@ $current_step = $_SESSION['current_step'] ?? 'siswa';
                     for (let input of fileInputs) {
                         if (input.files.length > 0) {
                             const file = input.files[0];
-                            if (file.size > 2 * 1024 * 1024) { // 2MB
+                            if (file.size > 2 * 1024 * 1024) {
                                 e.preventDefault();
                                 alert(`File ${input.name} terlalu besar. Maksimal 2MB.`);
                                 input.focus();

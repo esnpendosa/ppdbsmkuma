@@ -64,7 +64,7 @@ if (isset($_POST['login'])) {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background: linear-gradient(135deg, #004080, #0073e6);
+            background: #f5f5f5; /* DIUBAH: Background abu muda */
             height: 100vh;
             display: flex;
             align-items: center;
@@ -76,10 +76,11 @@ if (isset($_POST['login'])) {
             background: #fff;
             padding: 40px 35px;
             border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 400px;
             text-align: center;
+            border: 1px solid #e0e0e0;
         }
         .login-container h2 {
             margin-bottom: 25px;
@@ -103,11 +104,13 @@ if (isset($_POST['login'])) {
             border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.3s;
+            background: #fafafa;
         }
         input:focus {
             outline: none;
             border-color: #004080;
             box-shadow: 0 0 0 2px rgba(0, 64, 128, 0.1);
+            background: #fff;
         }
         button {
             width: 100%;
@@ -151,16 +154,29 @@ if (isset($_POST['login'])) {
             margin-bottom: 20px;
         }
         .info-box {
-            background: #e3f2fd;
+            background: #f8f9fa;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 14px;
             text-align: left;
+            border-left: 4px solid #004080;
         }
         .info-box h4 {
             margin: 0 0 10px 0;
             color: #004080;
+        }
+        .back-link {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .back-link a {
+            color: #004080;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -169,14 +185,6 @@ if (isset($_POST['login'])) {
         <div class="logo">
             <h2 style="color: #004080; margin: 0;">SMK UMAR MAS'UD</h2>
             <p style="color: #666; margin: 5px 0 0 0; font-size: 14px;">Admin Panel PPDB</p>
-        </div>
-        
-        <h2>Login Administrator</h2>
-        
-        <div class="info-box">
-            <h4>Informasi Login:</h4>
-            <p><strong>Username:</strong> admin</p>
-            <p><strong>Password:</strong> password</p>
         </div>
         
         <?php if(isset($error)): ?>
@@ -197,7 +205,7 @@ if (isset($_POST['login'])) {
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Masukkan password" required 
-                       value="admin123">
+                       value="smkumma">
             </div>
             
             <button type="submit" name="login">Masuk ke Dashboard</button>
